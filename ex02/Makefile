@@ -1,5 +1,4 @@
-NAME = find
-
+NAME = merge
 #	Folders
 SRC_DIR = ./src/
 INC_DIR = ./include
@@ -11,7 +10,7 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 INC_FLAGS = -I$(INC_DIR)
 
 #	source files
-SRCS =	main.cpp
+SRCS =	main.cpp PmergeMe.cpp
 OBJS =	$(addprefix $(OBJ_DIR), $(SRCS:%.cpp=%.o))
 
 # Rules

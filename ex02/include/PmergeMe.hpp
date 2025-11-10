@@ -20,6 +20,8 @@
 # define MAGENTA "\033[1;35m"
 # define NEUTRAL "\033[0m" 
 
+#define _DEBUG 0
+
 struct CompareIndice
 {
 	const std::deque<int> & data;
@@ -51,10 +53,11 @@ class PmergeMe
 		std::vector<int> _Vmax;
 		std::vector<int> _Vmin;
 		std::vector<int> _Vjacobsthal;
-		std::deque<int> _Vgroups;
+		std::vector<int> _Vgroups;
 
 	// member fonctions
-		bool parseNumbers(const std::string & args);
+		bool hasDouble(int *n, int size);
+		bool parseNumbers( char ** args, int ac);
 
 		template <typename A>
 		void insertSorted(A & container, int value);
@@ -63,7 +66,7 @@ class PmergeMe
 		void separateMinMax(T & container, T & mins, T & maxs);
 
 		template <typename C>
-		int max_value_idx(C & data);
+		int min_value_idx(C & data);
 		
 		template <typename T>
 		bool createStack(const std::string & s, T & _stack);
@@ -72,7 +75,7 @@ class PmergeMe
 		void printStack(T & container) const;
 
 		template <typename C, typename D>
-		void generate_jacobsthal_groups(const C & jacob, D & groups);
+		void generate_jacobsthal_groups(const C & jacob, D & groups, std::size_t total_mins);
 
 		template <typename A, typename B>
 		void generate_jacobsthal_sequence(const A & mins, B & jacob);
@@ -84,6 +87,19 @@ class PmergeMe
 		void push_min(Cont &sorted, const Cont &pending, const Cont &grJacobsthal);
 
 		static bool mayorThan(int a, int b);
+
+		std::size_t adjust_group_size(std::size_t gSize, std::size_t offset, std::size_t pSize);
+
+		template <typename Cont>
+		void bump_positions(Cont &pos, std::size_t ins_index);
+
+		template <typename Cont>
+		std::size_t insert_one_min(Cont & sorted, int value_to_insert, std::size_t max_pos_index);
+
+		template <typename Cont>
+		void init_positions(const Cont & sorted, Cont &  pos);
+
+
 };
 
 #include "FonctTemplate.tpp"
