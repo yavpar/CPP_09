@@ -1,6 +1,50 @@
 #include "PmergeMe.hpp"
 
-PmergeMe::PmergeMe() {}
+PmergeMe::PmergeMe()
+{
+	_deque.clear();
+	_Dmax.clear();
+	_Dmin.clear();
+	_Djacobsthal.clear();
+	_Dgroups.clear();
+	_vect.clear();
+	_Vmax.clear();
+	_Vmin.clear();
+	_Vjacobsthal.clear();
+	_Vgroups.clear();
+}
+
+PmergeMe::PmergeMe(const PmergeMe & copy) : \
+	_deque(copy._deque), \
+	_Dmax(copy._Dmax), \
+	_Dmin(copy._Dmin), \
+	_Djacobsthal(copy._Djacobsthal), \
+	_Dgroups(copy._Dgroups), \
+	_vect(copy._vect), \
+	_Vmax(copy._Vmax), \
+	_Vmin(copy._Vmin), \
+	_Vjacobsthal(copy._Vjacobsthal), \
+	_Vgroups(copy._Vjacobsthal)
+{}
+
+PmergeMe & PmergeMe::operator=(const PmergeMe & copy)
+{
+	if (this != &copy)
+	{
+		_deque = copy._deque;
+		_Dmax = copy._Dmax;
+		_Dmin = copy._Dmin;
+		_Djacobsthal = copy._Djacobsthal;
+		_Dgroups = copy._Dgroups;
+		_vect = copy._vect;
+		_Vmax = copy._Vmax;
+		_Vmin = copy._Vmin;
+		_Vjacobsthal = copy._Vjacobsthal;
+		_Vgroups = copy._Vjacobsthal;
+	}
+
+	return *this;
+}
 
 PmergeMe::~PmergeMe() {}
 
@@ -16,8 +60,8 @@ bool PmergeMe::hasDouble(int *n, int size)
 		{
 			if (target == *(n + j))
 			{
-            	std::cerr << RED << "Parse Error 19: doubles: " << target << " " << *(n + j) << NEUTRAL << '\n';
-				return true;
+            	std::cerr << RED << "Error: has doubles: " << target << NEUTRAL << '\n';
+return true;
 			}
 		}
 		++k;
@@ -33,32 +77,47 @@ bool PmergeMe::parseNumbers( char ** args, int ac)
     long long int value = 0;
     _deque.clear();
 
-	int n[1024];
 	int i = 0;
+
+	if (ac != 2)
+	{
+		std::cerr << RED << "Error: Too many arguments.\nUsage: ./merge \"positive numbers\"" << NEUTRAL << '\n';
+		return false;
+	}
+
     while (is >> value)
-    {
-		//std::cerr << RED << "Parse i = " << i << NEUTRAL << '\n';
-        if (value < INT_MIN || value > INT_MAX)
+	{
+		if (value < static_cast<long long int>(INT_MIN) || value > static_cast<long long int>(INT_MAX))
 		{
-            std::cerr << RED << "Parse Error 17: OVERFLOW: " << value << NEUTRAL << '\n';
-            return false;
-        }
+			std::cerr << RED << "Error: OVERFLOW: " << value << NEUTRAL << '\n';
+			return false;
+		}
 		int val = static_cast<int>(value);
-		*(n + i) = val;
+		if (val < 0)
+		{
+			std::cerr << RED << "Error: negative number: " << val << '\n' << NEUTRAL;
+			return false;
+		}
+		this->before[i] = val;
 		++i;
-    }
+	}	
+
+	this->nElem = i;
+
+	if (value < static_cast<long long int>(INT_MIN) || value > static_cast<long long int>(INT_MAX))
+	{
+		std::cerr << RED << "Error: OVERFLOW: " << value << NEUTRAL << '\n';
+		return false;
+	}
 
 	if (is.fail() && !is.eof())
 	{
-		std::cerr << RED << "Parse Error: 25: forbiden characters." << NEUTRAL << '\n';
+		std::cerr << RED << "Error: forbiden characters." << NEUTRAL << '\n';
 		return false;
 	}
 
-	if (hasDouble(n, i))
-	{
-		std::cerr << RED << "Parse Error: 57: Doubles!" << NEUTRAL << '\n';
+	if (hasDouble(this->before, i))
 		return false;
-	}
 	return true;
 }
 
@@ -76,3 +135,4 @@ std::size_t PmergeMe::adjust_group_size(std::size_t gSize, std::size_t offset, s
 
 	return gSize;
 }
+

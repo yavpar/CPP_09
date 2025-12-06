@@ -1,6 +1,93 @@
 #include "PmergeMe.hpp"
 #include <ctime>
 
+
+void testDeque(PmergeMe &p, const std::string &input)
+{
+    p._deque.clear();
+    p._Dmin.clear();
+    p._Dmax.clear();
+    p._Djacobsthal.clear();
+    p._Dgroups.clear();
+
+    p.createStack(input, p._deque);
+    p.separateMinMax(p._deque, p._Dmin, p._Dmax);
+    p.generate_jacobsthal_sequence(p._Dmin, p._Djacobsthal);    
+    p.generate_jacobsthal_groups(p._Djacobsthal, p._Dgroups, p._Dmin.size());
+    p.push_min(p._Dmax, p._Dmin, p._Dgroups);
+
+    if (_DEBUG)
+    {
+        std::cout << MARRON << "Deque sorted:\n";
+        p.printStack(p._Dmax);
+    }
+}
+
+void testVector(PmergeMe &p, const std::string &input)
+{
+    p._vect.clear();
+    p._Vmin.clear();
+    p._Vmax.clear();
+    p._Vjacobsthal.clear();
+    p._Vgroups.clear();
+
+    p.createStack(input, p._vect);
+    p.separateMinMax(p._vect, p._Vmin, p._Vmax);
+    p.generate_jacobsthal_sequence(p._Vmin, p._Vjacobsthal);    
+    p.generate_jacobsthal_groups(p._Vjacobsthal, p._Vgroups, p._Vmin.size());
+    p.push_min(p._Vmax, p._Vmin, p._Vgroups);
+
+    // Guardamos resultado final en p.after[]
+    for (std::size_t i = 0; i < p._Vmax.size(); i++)
+        p.after[i] = p._Vmax[i];
+
+    if (_DEBUG)
+    {
+        std::cout << MARRON << "Vector sorted:\n";
+        p.printStack(p._Vmax);
+    }
+}
+
+int main(int ac, char **av)
+{
+    PmergeMe p;
+
+    if (p.parseNumbers(av, ac) == false)
+        return 1;
+
+    std::string input = std::string(av[1]);
+
+    std::clock_t dequeBegin = std::clock();
+    testDeque(p, input);
+    std::clock_t dequeEnd = std::clock();
+    double elapsed = static_cast<double>(dequeEnd - dequeBegin) / CLOCKS_PER_SEC;
+
+    std::clock_t vectorBegin = std::clock();
+    testVector(p, input);
+    std::clock_t vectorEnd = std::clock();
+    double V_elapsed = static_cast<double>(vectorEnd - vectorBegin) / CLOCKS_PER_SEC;
+
+    std::cout << "Before:\n";
+    for (int i = 0; i < p.nElem; i++)
+        std::cout << p.before[i] << ' ';
+
+    std::cout << "\nAfter:\n";
+    for (int i = 0; i < p.nElem; i++)
+        std::cout << p.after[i] << ' ';
+
+    std::cout << "\nTime to process a range of "
+              << p.nElem << " elements with std::deque<int>: "
+              << elapsed << '\n';
+
+    std::cout << "Time to process a range of "
+              << p.nElem << " elements with std::vector<int>: "
+              << V_elapsed << '\n';
+
+    return 0;
+}
+
+
+/*
 void testDeque(std::string input)
 {
 	PmergeMe d;
@@ -17,7 +104,7 @@ void testDeque(std::string input)
 	}
 }
 
-void testVector(std::string input)
+void testVector(std::string input, int *after)
 {
 	PmergeMe v;
 
@@ -26,6 +113,11 @@ void testVector(std::string input)
 	v.generate_jacobsthal_sequence(v._Vmin, v._Vjacobsthal);	
 	v.generate_jacobsthal_groups(v._Vjacobsthal, v._Vgroups, v._Vmin.size());
 	v.push_min(v._Vmax, v._Vmin, v._Vgroups);
+	for (std::size_t i = 0; i < v._vect.size(); i++)
+	{
+		after[i] = v._vect[i];
+	}
+
 	if (_DEBUG)
 	{
 		std::cout << MARRON << "Vector sorted:\n";
@@ -33,98 +125,33 @@ void testVector(std::string input)
 	}
 }
 
-
 int main(int ac, char **av)
 {
 	PmergeMe p;
-	if (ac != 2 || p.parseNumbers(av, ac) == false)
-	{
-		std::cout << "Error Parsing." << '\n';
-		return 1;
-	}
 
-//	initialiser l'horloge pour deque
-	std::cout << MAGENTA << "***	Test deque ***\n" << NEUTRAL;
+	if (p.parseNumbers(av, ac) == false)
+		return 1;
 
 	std::clock_t dequeBegin = std::clock();
 	testDeque(std::string (av[1]));
 	std::clock_t dequeEnd = std::clock();
-
 	double elapsed = static_cast<double>(dequeEnd - dequeBegin) / CLOCKS_PER_SEC;
-	std::cout << "time for deque: " << elapsed << '\n';
-//	initialiser l'horloge pour vector
 
-	std::cout << MAGENTA << "***	Test vector	***\n" << NEUTRAL;
 
 	std::clock_t vectorBegin = std::clock();
-	testVector(std::string (av[1]));
+	testVector(std::string (av[1]), p.after);
 	std::clock_t vectorEnd = std::clock();
-
 	double V_elapsed = static_cast<double>(vectorEnd - vectorBegin) / CLOCKS_PER_SEC;
-	std::cout << "time for vector: " << V_elapsed << '\n';
 
+	std::cout << "Before:\n";
+	for (int i = 0; i < p.nElem; i++)
+		std::cout << p.before[i] << ' ';
+	std::cout << "After:\n";
+	for (int i = 0; i < p.nElem; i++)
+		std::cout << p.after[i] << ' ';
+	
+	std::cout << "Time to process a range of " << p.nElem << " elements with std::deque<int> :" << elapsed << '\n'; 
+	std::cout << "Time to process a range of " << p.nElem << " elements with std::deque<int> :" << V_elapsed << '\n'; 
 	return 0;
 }
-
-/*
-void f()
-{
-	int a;
-	int b;
-
-	a = -9;
-	b = 55;
-
-	// booleano : es el resultado de una comparacion de una expresion, verdadera o falsa.
-	//				si es falsa el valor es 0
-	//				si es verdadera el valor es diferente de 0. Tipicamente el valor generico es 1
-
-	// como se realiza?
-
-	//		operadores:
-	//					< mayor que
-	//					> menor que
-	//				   == igual que
-	//				   <= menor o igual que
-	//				   >= mayor o igual que
-	//				   != diferente que
-	//					! si es falso 
-
-	//		evaluacion de un valor numerico de tipo char. 
-
-	//		instrucciones:
-	//					if ()
-	//					while ()
-	//					asignacion = booleano
-
-	//     8 < 10 ==> 
-	//     80 < 10 ==> 
-
-	//     8 > 10 ==> 
-
-	//     8 < 8 ==> 
-	//     8 > 8 ==> 
-	//     8 <= 8 ==> 
-
-	// ejemplo con if ()
-
-	// ejemplo con while ()
-
-	// ejemplo con asignacion = booleando
-
-	// operadores logicos && || 
-
-	// sintaxis: (expresion_izq operador expresion_der)
-
-	// MODO DE FUNCIONAMIENTO
-
-	//	con && AMBOS resultados deben satisfacer ambas expresiones
-	// 	con || debe satisfacer al menos una de las expresiones
-
-	// se realizan de izquierda a derecha: 
-	//			con && primero se evalua exp_izq. se es exitoso se evalua exp_der
-	//					sino el resultado es falso
-
-	//			con || primero se evalua exp_izq. si no es exitoso se evalua exp_der 
-
-}*/
+*/
