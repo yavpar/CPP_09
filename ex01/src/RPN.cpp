@@ -40,9 +40,11 @@ float RPN::executeOperation(int left, int right, char op, bool & isError)
 			if (right != 0)
 				result = left / right;
 			else
+			{
 				isError = true;
 				this->_error = "Error: Infinite result.";
 				result = 1.0;
+			}
 			break ;
 		default:
 			isError = true;

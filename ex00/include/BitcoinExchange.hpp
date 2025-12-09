@@ -24,7 +24,7 @@ class BitcoinExchange
 		virtual ~BitcoinExchange();
 		BitcoinExchange & operator=(const BitcoinExchange & copy);
 
-		virtual bool loadFile(const std::string & filename) = 0;
+		virtual bool loadFile(std::string filename) = 0;
 		virtual bool processLine(const std::string & line) = 0;
 		bool isValidDate(const std::string & date);
 };

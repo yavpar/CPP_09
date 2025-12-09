@@ -67,91 +67,19 @@ int main(int ac, char **av)
     std::clock_t vectorEnd = std::clock();
     double V_elapsed = static_cast<double>(vectorEnd - vectorBegin) / CLOCKS_PER_SEC;
 
-    std::cout << "Before:\n";
+    std::cout << BLUE << "Before:\n";
     for (int i = 0; i < p.nElem; i++)
         std::cout << p.before[i] << ' ';
+    std::cout << '\n' << NEUTRAL;
 
-    std::cout << "\nAfter:\n";
+    std::cout <<  GREEN << "After:\n";
     for (int i = 0; i < p.nElem; i++)
         std::cout << p.after[i] << ' ';
+    std::cout << '\n' << NEUTRAL;
 
-    std::cout << "\nTime to process a range of "
-              << p.nElem << " elements with std::deque<int>: "
-              << elapsed << '\n';
+    std::cout << MAGENTA << "Time to process a range of " << p.nElem << " elements with std::deque<int>: " << elapsed << " seconds\n";
 
-    std::cout << "Time to process a range of "
-              << p.nElem << " elements with std::vector<int>: "
-              << V_elapsed << '\n';
+    std::cout << MARRON << "Time to process a range of " << p.nElem << " elements with std::vector<int>: " << V_elapsed << " seconds\n";
 
     return 0;
 }
-
-
-/*
-void testDeque(std::string input)
-{
-	PmergeMe d;
-
-	d.createStack(input, d._deque);
-	d.separateMinMax(d._deque, d._Dmin, d._Dmax);
-	d.generate_jacobsthal_sequence(d._Dmin, d._Djacobsthal);	
-	d.generate_jacobsthal_groups(d._Djacobsthal, d._Dgroups, d._Dmin.size());
-	d.push_min(d._Dmax, d._Dmin, d._Dgroups);
-	if (_DEBUG)
-	{
-		std::cout << MARRON << "Deque sorted:\n";
-		d.printStack(d._Dmax);
-	}
-}
-
-void testVector(std::string input, int *after)
-{
-	PmergeMe v;
-
-	v.createStack(input, v._vect);
-	v.separateMinMax(v._vect, v._Vmin, v._Vmax);
-	v.generate_jacobsthal_sequence(v._Vmin, v._Vjacobsthal);	
-	v.generate_jacobsthal_groups(v._Vjacobsthal, v._Vgroups, v._Vmin.size());
-	v.push_min(v._Vmax, v._Vmin, v._Vgroups);
-	for (std::size_t i = 0; i < v._vect.size(); i++)
-	{
-		after[i] = v._vect[i];
-	}
-
-	if (_DEBUG)
-	{
-		std::cout << MARRON << "Vector sorted:\n";
-		v.printStack(v._Vmax);
-	}
-}
-
-int main(int ac, char **av)
-{
-	PmergeMe p;
-
-	if (p.parseNumbers(av, ac) == false)
-		return 1;
-
-	std::clock_t dequeBegin = std::clock();
-	testDeque(std::string (av[1]));
-	std::clock_t dequeEnd = std::clock();
-	double elapsed = static_cast<double>(dequeEnd - dequeBegin) / CLOCKS_PER_SEC;
-
-
-	std::clock_t vectorBegin = std::clock();
-	testVector(std::string (av[1]), p.after);
-	std::clock_t vectorEnd = std::clock();
-	double V_elapsed = static_cast<double>(vectorEnd - vectorBegin) / CLOCKS_PER_SEC;
-
-	std::cout << "Before:\n";
-	for (int i = 0; i < p.nElem; i++)
-		std::cout << p.before[i] << ' ';
-	std::cout << "After:\n";
-	for (int i = 0; i < p.nElem; i++)
-		std::cout << p.after[i] << ' ';
-	
-	std::cout << "Time to process a range of " << p.nElem << " elements with std::deque<int> :" << elapsed << '\n'; 
-	std::cout << "Time to process a range of " << p.nElem << " elements with std::deque<int> :" << V_elapsed << '\n'; 
-	return 0;
-}
-*/

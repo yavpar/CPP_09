@@ -34,27 +34,21 @@ std::string trim(const std::string &s)
 	std::string::size_type start = 0;
 	std::string::size_type end = s.length();
 
-    // encontrar el primer carácter no espacio	
 	while (start < end && std::isspace(static_cast<unsigned char>(s[start])))
 		++start;
 
-    // encontrar el último carácter no espacio
 	while (end > start && std::isspace(static_cast<unsigned char>(s[end - 1])))
 		--end;
 
-	// devolver la subcadena sin los espacios
 	return s.substr(start, end - start);
 }
-
-
-
 
 bool isValidDateFormat(const std::string& date)
 {
 	std::string s = trim(date);
     if (s.size() != 10)
 	{
-        std::cerr << RED << "Error: data.size() != 10>>>:" << date << "." << NEUTRAL << '\n';
+       // std::cerr << RED << "Error: data.size() != 10 : " << date << "." << NEUTRAL << '\n';
         return false;
 	}
 
@@ -64,7 +58,7 @@ bool isValidDateFormat(const std::string& date)
 		{
 			if (s[i] != '-')
 			{
-				std::cerr << RED << "Error: != [-]" << NEUTRAL << '\n';
+				//std::cerr << RED << "Error: != [-]" << NEUTRAL << '\n';
 				return false;
 			}
 		}
@@ -72,7 +66,7 @@ bool isValidDateFormat(const std::string& date)
 		{
 			if (!isdigit(s[i]))
 			{
-				std::cerr << RED << "Error: no es digit" << NEUTRAL << '\n';
+				//std::cerr << RED << "Error: not a digit" << NEUTRAL << '\n';
 				return false;
 			}
 		}
@@ -85,7 +79,7 @@ bool BitcoinExchange::isValidDate(const std::string& date)
 {
     if (!isValidDateFormat(date))
 	{
-        std::cerr << RED << "Error: IsValidFormat" << NEUTRAL << '\n';
+        //std::cerr << RED << "Error: IsValidFormat" << NEUTRAL << '\n';
         return false;
 	}
     int year = atoi(date.substr(0, 4).c_str());
@@ -94,7 +88,6 @@ bool BitcoinExchange::isValidDate(const std::string& date)
 
     if (year < 1 || month < 1 || month > 12 || day < 1)
 	{
-        std::cerr << RED << "Error: No esta dentro del rango" << NEUTRAL << '\n';
         return false;
 	}
 
@@ -106,7 +99,7 @@ bool BitcoinExchange::isValidDate(const std::string& date)
 
     if (day > daysInMonth[month - 1])
 	{
-        std::cerr << RED << "Error: day > [month - 1]" << NEUTRAL << '\n';
+        //std::cerr << RED << "Error: day > [month - 1]" << NEUTRAL << '\n';
         return false;
 	}
 

@@ -16,9 +16,9 @@ QueryProcessor & QueryProcessor::operator=(const QueryProcessor & copy)
 
 QueryProcessor::QueryProcessor(Database *copy) : _db(copy) {}
 
-bool QueryProcessor::loadFile(const std::string & filename)
+bool QueryProcessor::loadFile(std::string filename)
 {
-	std::ifstream infile(filename);
+	std::ifstream infile(filename.c_str());
 	if (infile.is_open() == false)
 	{
 		std::cerr << "Error: cannot open file: " << RED << filename << NEUTRAL << '\n';
@@ -30,13 +30,13 @@ bool QueryProcessor::loadFile(const std::string & filename)
     std::getline(infile, line);
     if (line.empty())
     {
-        std::cerr << BLUE << "File is empty." << NEUTRAL << '\n';
+        std::cerr << BLUE << "Error: file is empty." << NEUTRAL << '\n';
         return true;
     }
 
     if (line != "date | value" )
     {
-        std::cerr << RED << "Error 39: bad input => " << line << NEUTRAL << '\n';
+        std::cerr << RED << "Error: bad input => " << line << NEUTRAL << '\n';
         return false;  
     }
 
@@ -57,21 +57,21 @@ bool QueryProcessor::processLine(const std::string & line)
 
     if (line.find('|') == std::string::npos)
     {
-        std::cerr << RED << "Error 60: bad input => " << line << NEUTRAL << '\n';
+        std::cerr << RED << "Error: bad input => " << line << NEUTRAL << '\n';
         return false;
     }
 
     std::getline(ss, date, '|');
     if (!isValidDate(date))
     {
-        std::cerr << RED << "Error 67: bad input => " << line << NEUTRAL << '\n';
+        std::cerr << RED << "Error: bad input => " << line << NEUTRAL << '\n';
         return false;
     }
 
     std::string token;
     if (!(ss >> token))
     {
-        std::cerr << RED << "Error 74: bad input => " << line << NEUTRAL << '\n';
+        std::cerr << RED << "Error: bad input => " << line << NEUTRAL << '\n';
         return false;
     }
 
@@ -79,7 +79,7 @@ bool QueryProcessor::processLine(const std::string & line)
     ratio = std::strtod(token.c_str(), &end);
     if (*end != '\0')
     {
-        std::cerr << RED << "Error 82: bad input => " << line << NEUTRAL << '\n';
+        std::cerr << RED << "Error: bad input => " << line << NEUTRAL << '\n';
         return false;
     }
 
@@ -98,7 +98,7 @@ bool QueryProcessor::processLine(const std::string & line)
     float dbValue;
     if (_db->getValue(date, dbValue) == false)
     {
-        std::cerr << RED << "Error 101: bad input => "<< line << NEUTRAL << '\n';
+        std::cerr << RED << "Error: bad input => "<< line << NEUTRAL << '\n';
         return false;
     }
 

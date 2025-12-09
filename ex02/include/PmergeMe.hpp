@@ -22,18 +22,6 @@
 # define MAX_ELEMENTS 4000
 #define _DEBUG 0
 
-struct CompareIndice
-{
-	const std::deque<int> & data;
-	CompareIndice (const std::deque<int> &d) : data(d) {}
-	bool operator()(int a, int b) const
-	{
-		if (a != b)
-			return (data[a] < data[b]);
-		return (a < b);
-	}
-};
-
 class PmergeMe
 {
 	public:

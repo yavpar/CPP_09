@@ -16,9 +16,9 @@ DataLoader & DataLoader::operator=(const DataLoader & copy)
 
 DataLoader::DataLoader(Database *copy) : _db(copy) {}
 
-bool DataLoader::loadFile(const std::string & filename)
+bool DataLoader::loadFile(std::string filename)
 {
-	std::ifstream infile(filename);
+	std::ifstream infile(filename.c_str());
 
 	if (infile.is_open() == false)
 	{

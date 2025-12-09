@@ -19,7 +19,7 @@ class DataLoader : public BitcoinExchange
 
 		DataLoader(Database *copy);
 
-		virtual bool loadFile(const std::string & filename);
+		virtual bool loadFile(std::string filename);
 		virtual bool processLine(const std::string & line);
 
 	private:
