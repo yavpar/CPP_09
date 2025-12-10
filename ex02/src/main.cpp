@@ -52,20 +52,25 @@ int main(int ac, char **av)
 {
     PmergeMe p;
 
+    std::clock_t begin_parse = std::clock();
     if (p.parseNumbers(av, ac) == false)
         return 1;
+    std::clock_t end_parse = std::clock();
+
+    std::clock_t time_parse = static_cast<double>(end_parse - begin_parse) / CLOCKS_PER_SEC;
+
 
     std::string input = std::string(av[1]);
 
     std::clock_t dequeBegin = std::clock();
     testDeque(p, input);
     std::clock_t dequeEnd = std::clock();
-    double elapsed = static_cast<double>(dequeEnd - dequeBegin) / CLOCKS_PER_SEC;
+    double elapsed = time_parse + static_cast<double>(dequeEnd - dequeBegin) / CLOCKS_PER_SEC;
 
     std::clock_t vectorBegin = std::clock();
     testVector(p, input);
     std::clock_t vectorEnd = std::clock();
-    double V_elapsed = static_cast<double>(vectorEnd - vectorBegin) / CLOCKS_PER_SEC;
+    double V_elapsed = time_parse + static_cast<double>(vectorEnd - vectorBegin) / CLOCKS_PER_SEC;
 
     std::cout << BLUE << "Before:\n";
     for (int i = 0; i < p.nElem; i++)
